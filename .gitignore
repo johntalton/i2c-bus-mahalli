@@ -1,0 +1,11 @@
+node_modules/
+.vscode/
+target/
+npm/
+artifacts/
+
+package-lock.json
+.DS_Store
+*.node
+index.js
+index.d.ts

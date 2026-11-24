@@ -1,0 +1,18 @@
+[package]
+authors = ["John Talton <johntalton@gmail.com>"]
+name = "mahalli"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+napi = { version = "3", default-features = false, features = ["napi10"] }
+napi-derive = { version = "3", default-features = false, features = ["strict", "type-def"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+i2cdev = "0.6"
+
+[build-dependencies]
+napi-build = "2"
