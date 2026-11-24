@@ -9,10 +9,13 @@ use napi::bindgen_prelude::*;
 use napi_derive::napi;
 
 #[cfg(target_os = "linux")]
-use i2cdev::{
-  core::{I2CDevice, I2CTransfer},
-  linux::{LinuxI2CDevice, LinuxI2CError, LinuxI2CMessage},
+use {
+  i2cdev::{
+    core::{I2CDevice, I2CTransfer, I2CMessage},
+    linux::{LinuxI2CDevice, LinuxI2CError, LinuxI2CMessage},
+  }
 };
+
 
 #[napi]
 pub const MAX_TRANSFER_LEN: u32 = 32;
@@ -25,8 +28,6 @@ pub const MAX_ADDR: u16 = 0x77;
 
 #[napi(object)]
 pub struct BusOptions {
-  /// Kernel I2C bus timeout in milliseconds (rounded up to 10ms units by the kernel).
-  pub timeout_ms: Option<u32>,
 }
 
 #[napi(object)]
@@ -227,19 +228,12 @@ impl Mahalli {
 #[napi]
 impl Mahalli {
   #[napi(constructor)]
-  pub fn new(bus_path: String, options: Option<BusOptions>) -> Result<Self> {
+  pub fn new(bus_path: String, _options: Option<BusOptions>) -> Result<Self> {
     #[cfg(target_os = "linux")]
     {
-      let mut dev = LinuxI2CDevice::new(&bus_path, 0x00)
+      let dev = LinuxI2CDevice::new(&bus_path, 0x00)
         .map_err(|e| i2c_err(&format!("Failed to open {bus_path}"), e))?;
-      if let Some(ms) = options.and_then(|o| o.timeout_ms) {
-        if ms == 0 {
-          return Err(Error::new(Status::InvalidArg, "timeoutMs must be >= 1"));
-        }
-        dev
-          .set_timeout(std::time::Duration::from_millis(ms as u64))
-          .map_err(|e| i2c_err("Failed to set I2C timeout", e))?;
-      }
+
       Ok(Self {
         state: Arc::new(BusState {
           device: Mutex::new(Some(dev)),
@@ -249,10 +243,11 @@ impl Mahalli {
     }
     #[cfg(not(target_os = "linux"))]
     {
-      let _ = (bus_path, options);
+      let _ = (bus_path, _options);
       Err(Error::from_reason("i2cdev is only supported on Linux"))
     }
   }
+
 
   #[napi(getter)]
   pub fn is_closed(&self) -> bool {
