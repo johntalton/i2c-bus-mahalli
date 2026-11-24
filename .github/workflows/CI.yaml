@@ -26,7 +26,7 @@ jobs:
             test: true
           - target: aarch64-unknown-linux-gnu
             os: ubuntu-latest
-            cross: --cross-compile
+            cross: --use-napi-cross
             test: false
           - target: armv7-unknown-linux-gnueabihf
             os: ubuntu-latest
@@ -44,6 +44,8 @@ jobs:
           target: ${{ matrix.settings.target }}
       - run: npm install
       - run: npm exec -- napi build --platform --release --esm --target ${{ matrix.settings.target }} ${{ matrix.settings.cross }}
+        env:
+          CARGO_BUILD_WARNINGS: warn
       - uses: actions/upload-artifact@v4
         with:
           name: bindings-${{ matrix.settings.target }}
