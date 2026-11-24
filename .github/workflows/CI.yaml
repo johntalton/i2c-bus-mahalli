@@ -72,10 +72,10 @@ jobs:
       - run: mv artifacts/*.node .
       - run: npm run create-npm-dirs
       - run: npm run artifacts
-      # - run: |
-      #     for dir in npm/*; do
-      #       if [ -d "$dir" ]; then
-      #         npm publish "$dir" --access public
-      #       fi
-      #     done
-      #     npm publish --access public
+      - run: |
+          for dir in npm/*; do
+            if [ -d "$dir" ]; then
+              npm publish "$dir" --access public
+            fi
+          done
+      - run: npm publish --access public
