@@ -72,6 +72,7 @@ jobs:
           merge-multiple: true
       - run: npm run create-npm-dirs
       - run: npm run artifacts
+      - run: npx napi prepublish -t npm --no-gh-release --skip-optional-publish
       - run: |
           for dir in npm/*; do
             if [ -d "$dir" ]; then
