@@ -13,6 +13,7 @@ env:
 permissions:
   contents: read
   id-token: write
+  pull-requests: write
 
 jobs:
   Build:
@@ -74,7 +75,7 @@ jobs:
       - run: |
           for dir in npm/*; do
             if [ -d "$dir" ]; then
-              npm publish "$dir" --access public
+              npm publish "$dir" --provenance --access public
             fi
           done
-      - run: npm publish --access public
+      - run: npm publish --provenance --access public
