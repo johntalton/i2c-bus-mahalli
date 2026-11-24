@@ -10,7 +10,7 @@ use napi_derive::napi;
 
 #[cfg(target_os = "linux")]
 use i2cdev::{
-  core::{I2CDevice, I2CMessage, I2CTransfer, I2CMessage},
+  core::{I2CDevice, I2CMessage, I2CTransfer},
   linux::{LinuxI2CDevice, LinuxI2CError, LinuxI2CMessage},
 };
 

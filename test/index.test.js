@@ -10,13 +10,15 @@ test('exports I2CBusMahalli class', () => {
 test('throws expected error when opening bus device', () => {
   if (process.platform === 'linux') {
     assert.throws(
-      () => new I2CBusMahalli('/dev/i2c-nonexistent-99'),
-      /Failed to open \/dev\/i2c-nonexistent-99/,
-    );
+      () => new I2CBusMahalli(99), {
+      message: '[Io(Os { code: 2, kind: NotFound, message: "No such file or directory" })] Failed to open /dev/i2c-99: No such file or directory (os error 2)',
+      name: 'Error'
+    });
   } else {
     assert.throws(
-      () => new I2CBusMahalli('/dev/i2c-nonexistent-99'),
+      () => new I2CBusMahalli(99),
       /i2cdev is only supported on Linux/,
     )
   }
 })
+
