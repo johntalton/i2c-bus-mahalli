@@ -69,7 +69,6 @@ jobs:
           pattern: bindings-*
           path: artifacts
           merge-multiple: true
-      - run: mv artifacts/*.node .
       - run: npm run create-npm-dirs
       - run: npm run artifacts
       - run: |
