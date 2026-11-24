@@ -9,3 +9,4 @@ package-lock.json
 *.node
 index.js
 index.d.ts
+_*

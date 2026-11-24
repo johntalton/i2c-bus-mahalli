@@ -9,13 +9,10 @@ use napi::bindgen_prelude::*;
 use napi_derive::napi;
 
 #[cfg(target_os = "linux")]
-use {
-  i2cdev::{
-    core::{I2CDevice, I2CTransfer, I2CMessage},
-    linux::{LinuxI2CDevice, LinuxI2CError, LinuxI2CMessage},
-  }
+use i2cdev::{
+  core::{I2CDevice, I2CMessage, I2CTransfer, I2CMessage},
+  linux::{LinuxI2CDevice, LinuxI2CError, LinuxI2CMessage},
 };
-
 
 #[napi]
 pub const MAX_TRANSFER_LEN: u32 = 32;
@@ -25,10 +22,6 @@ pub const MIN_ADDR: u16 = 0x03;
 
 #[napi]
 pub const MAX_ADDR: u16 = 0x77;
-
-#[napi(object)]
-pub struct BusOptions {
-}
 
 #[napi(object)]
 pub struct ScanOptions {
@@ -228,12 +221,11 @@ impl Mahalli {
 #[napi]
 impl Mahalli {
   #[napi(constructor)]
-  pub fn new(bus_path: String, _options: Option<BusOptions>) -> Result<Self> {
+  pub fn new(bus_path: String) -> Result<Self> {
     #[cfg(target_os = "linux")]
     {
       let dev = LinuxI2CDevice::new(&bus_path, 0x00)
         .map_err(|e| i2c_err(&format!("Failed to open {bus_path}"), e))?;
-
       Ok(Self {
         state: Arc::new(BusState {
           device: Mutex::new(Some(dev)),
@@ -243,11 +235,10 @@ impl Mahalli {
     }
     #[cfg(not(target_os = "linux"))]
     {
-      let _ = (bus_path, _options);
+      let _ = bus_path;
       Err(Error::from_reason("i2cdev is only supported on Linux"))
     }
   }
-
 
   #[napi(getter)]
   pub fn is_closed(&self) -> bool {
