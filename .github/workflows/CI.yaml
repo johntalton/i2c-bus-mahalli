@@ -38,7 +38,7 @@ jobs:
           node-version: '>=24'
       - uses: actions-rust-lang/setup-rust-toolchain@v2
         with:
-          targets: ${{ matrix.settings.target }}
+          target: ${{ matrix.settings.target }}
       - run: npm install
       - run: npm exec -- napi build --platform --release --esm --target ${{ matrix.settings.target }} --use-napi-cross
       - uses: actions/upload-artifact@v4
