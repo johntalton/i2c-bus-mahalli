@@ -75,8 +75,8 @@ jobs:
       - run: npx napi prepublish -t npm --no-gh-release --skip-optional-publish
       - run: |
           for dir in npm/*; do
-            if [ -d "./$dir" ]; then
-              npm publish "$dir" --provenance --access public
+            if [ -d "$dir" ]; then
+              npm publish "./$dir" --provenance --access public
             fi
           done
       - run: npm publish --provenance --access public
